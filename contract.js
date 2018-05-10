@@ -1,28 +1,52 @@
 'use strict';
 
+let Tweet = function (from, timeStamp, content) {
+  this.from = from;
+  this.timeStamp = timeStamp;
+  this.content = content;
+};
+
+Tweet.prototype = {
+  toString: function () {
+    return JSON.stringify(this);
+  }
+};
+
 let TweetContract = function () {
   LocalContractStorage.defineMapProperty(this, "tweets");
+  LocalContractStorage.defineProperty(this, "size");
 };
 
 TweetContract.prototype = {
   init: function () {
+    this.size = 0;
   },
 
-  post: function (tweet) {
-    let from = Blockchain.transaction.from;
-    console.log("************* posting a tweet ************");
-    console.log(tweet);
-    console.log("************* tweet comes from ***********");
-    console.log(from);
-    this.tweets.set(from, tweet);
+  post: function (content) {
+    let index = this.size;
+    let tweet = new Tweet(Blockchain.transaction.from, Blockchain.transaction.timestamp, content);
+    this.tweets.set(index, tweet);
+    this.size += 1;
   },
 
-  timeline: function () {
-    console.log("*********** getting timeline ***********");
-    let from = Blockchain.transaction.from;
-    console.log("*********** the tweet ******************");
-    console.log(this.tweets.get(from));
-    return this.tweets.get(from);
+  timeline: function (pageSize, offset) {
+    pageSize = parseInt(pageSize);
+    offset = parseInt(offset);
+
+    if (offset > this.size) {
+      throw new Error("offset is not valid");
+    }
+
+    let number = offset + pageSize;
+    if (number > this.size) {
+      number = this.size;
+    }
+
+    const result = [];
+    for (let i = offset; i < number; i++) {
+      result.push(this.tweets.get(i));
+    }
+    return JSON.stringify(result);
   }
 };
 
