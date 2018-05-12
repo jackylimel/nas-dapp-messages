@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Ideal React Seed </title>
+    <script src="./lib/nebPay.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+
+<div id="app">
+    <div class="item" v-for="tweet in list">
+        <div class="user">
+            <div class="from">
+                {{ tweet.from }}
+            </div>
+            <div class="timeStamp">
+                {{ tweet.timeStamp }}
+            </div>
+            <div class="content">
+                {{ tweet.content }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="button" value="Submit" name="submit"/>
+
+<script>
+  var NebPay = require("nebpay");
+  const nebPay = new NebPay();
+  var dappAddress = "n1kFDbz5TvZ3nb4SLpuAkFfDtGKFfb9GB4f";
+
+  getWish(0);
+
+  function getWish(page) {
+
+    var to = dappAddress;
+    var value = "0";
+    var callFunction = "timeline";
+    var callArgs = "[10, 0]";
+    nebPay.simulateCall(to, value, callFunction, callArgs, {
+      listener: cbSearch //指定回调函数
+    });
+  }
+
+  function cbSearch(response) {
+    if (!response.result) return;
+    var result = eval(JSON.parse(response.result));
+    console.log(result);
+    Vue.set(app, 'list', result)
+  }
+
+  var app = new Vue({
+    el: '#app',
+    data: {
+      list: []
+    }
+  })
+</script>
+</body>
+</html>
