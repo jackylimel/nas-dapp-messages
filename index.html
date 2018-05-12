@@ -21,12 +21,15 @@
                 <textarea class="tweet-compose" placeholder="Write down your message..." v-model="message"
                           v-on:keyup="type"></textarea>
                 <div id="char-count">{{ 140 - message.length}}</div>
-                <button class="button" id="tweet-submit" v-if="allowSubmit">Submit</button>
+                <button class="button" id="tweet-submit" v-if="allowSubmit" v-on:click="postMessage">Submit</button>
             </div>
         </div>
     </div>
     <div id="app">
         <h2>Messages</h2>
+        <div v-if="messagePosted"> Message has been posted, please wait for a while until it's written to the
+            blockchain.
+        </div>
         <div id="stream" v-for="tweet in list">
             <div class="tweet">
                 <div class="content">
@@ -51,7 +54,8 @@
     data: {
       message: '',
       allowSubmit: true,
-      list: []
+      list: [],
+      messagePosted: false
     },
     methods: {
       timeConverter: function (timeStamp) {
@@ -68,6 +72,11 @@
       type: function () {
         const messageLength = this.message.length;
         this.allowSubmit = messageLength <= 140;
+      },
+      postMessage: function () {
+        nebPay.call(dappAddress, 0, "post", JSON.stringify([this.message]), {
+          listener: messagePosted
+        });
       }
     }
   });
@@ -78,11 +87,15 @@
     const callFunction = "timeline";
     const callArgs = "[10, 0]";
     nebPay.simulateCall(dappAddress, 0, callFunction, callArgs, {
-      listener: parse
+      listener: parseTweets
     });
   }
 
-  function parse(response) {
+  function messagePosted() {
+    Vue.set(app, 'messagePosted', true)
+  }
+
+  function parseTweets(response) {
     if (!response.result) return;
     const result = eval(JSON.parse(response.result));
     Vue.set(app, 'list', result.reverse())
