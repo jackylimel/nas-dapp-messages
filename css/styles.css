@@ -21,6 +21,17 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
     align-items: center;
 }
 
+.footer {
+    background-color: white;
+    width: 837px;
+    margin: 20px auto;
+    border-radius: 6px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 body {
     background: #1A1B1F url(https://abs.twimg.com/images/themes/theme9/bg.gif) no-repeat;
     font-family: "Helvetica Neue", Arial, sans-serif;
@@ -30,13 +41,16 @@ body {
     padding: 30px 14px 15px;
     margin: 0 auto;
     width: 837px;
+    display: flex;
 }
 
 #dashboard {
     border-radius: 6px;
     background-color: white;
     float: left;
+    margin-right: 20px;
     width: 302px;
+    height: 200px;
 }
 
 /* Profile */
@@ -93,14 +107,14 @@ body {
     text-shadow: 0 1px 1px rgba(255, 255, 255, .75);
 }
 
-#app {
+#messages {
     float: right;
     width: 522px;
     background-color: white;
     border-radius: 6px;
 }
 
-#app h2 {
+#messages h2 {
     font-size: 18px;
     padding: 12px;
     border-bottom: 1px solid #e8e8e8;

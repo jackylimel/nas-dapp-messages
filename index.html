@@ -7,50 +7,54 @@
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 </head>
 <body>
-<div class="title">Leave your message on blockchain, it will never be deleted nor modified.</div>
+<div id="app">
+    <div class="title">Leave your message on blockchain, it will never be deleted nor modified.</div>
 
-<div id="page-container">
-    <div id="dashboard">
-        <div id="profile-summary">
-            <div class="content">
-                <img class='avatar' src='image/nebulas.png'/>
+    <div id="page-container">
+        <div id="dashboard">
+            <div id="profile-summary">
+                <div class="content">
+                    <img class='avatar' src='image/nebulas.png'/>
+                </div>
             </div>
-        </div>
-        <div id="tweet-content">
-            <div id="tweet-controls">
+            <div id="tweet-content">
+                <div id="tweet-controls">
                 <textarea class="tweet-compose" placeholder="Write down your message..." v-model="message"
                           v-on:keyup="type"></textarea>
-                <div id="char-count">{{ 140 - message.length}}</div>
-                <button class="button" id="tweet-submit" v-if="allowSubmit" v-on:click="postMessage">Submit</button>
+                    <div id="char-count">{{ 140 - message.length}}</div>
+                    <button class="button" id="tweet-submit" v-if="allowSubmit" v-on:click="postMessage">Submit</button>
+                </div>
+            </div>
+        </div>
+        <div id="messages">
+            <h2>Messages</h2>
+            <div id="stream" v-for="tweet in list">
+                <div class="tweet">
+                    <div class="content">
+                        <img class="avatar" src="image/nebulas.png"/>
+                        <strong class="fullname">{{tweet.from}}</strong>
+                        <p class="tweet-text">{{tweet.content}}</p>
+                    </div>
+                    <div class="time">
+                        <span v-html="timeConverter(tweet.timeStamp)"/>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div id="app">
-        <h2>Messages</h2>
-        <div v-if="messagePosted"> Message has been posted, please wait for a while until it's written to the
-            blockchain.
-        </div>
-        <div id="stream" v-for="tweet in list">
-            <div class="tweet">
-                <div class="content">
-                    <img class="avatar" src="image/nebulas.png"/>
-                    <strong class="fullname">{{tweet.from}}</strong>
-                    <p class="tweet-text">{{tweet.content}}</p>
-                </div>
-                <div class="time">
-                    <span v-html="timeConverter(tweet.timeStamp)"/>
-                </div>
-            </div>
-        </div>
+
+    <div class="footer" v-if="messagePosted">Message posted, please come back later. Your message will appear on
+        blockchain soon.
     </div>
 </div>
+
 
 <script>
   const NebPay = require("nebpay");
   const nebPay = new NebPay();
   const dappAddress = "n1kFDbz5TvZ3nb4SLpuAkFfDtGKFfb9GB4f";
   const app = new Vue({
-    el: '#page-container',
+    el: '#app',
     data: {
       message: '',
       allowSubmit: true,
