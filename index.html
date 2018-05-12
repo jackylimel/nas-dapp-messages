@@ -28,6 +28,10 @@
         </div>
         <div id="messages">
             <h2>Messages</h2>
+
+            <div id="load-more" style="cursor: pointer;" v-if="list.length != 0 && list.length % 10 == 0" v-on:click="loadMore">
+                Click to load more
+            </div>
             <div id="stream" v-for="tweet in list">
                 <div class="tweet">
                     <div class="content">
@@ -81,15 +85,18 @@
         nebPay.call(dappAddress, 0, "post", JSON.stringify([this.message]), {
           listener: messagePosted
         });
+      },
+      loadMore: function () {
+        getPosts(this.list.length / 10)
       }
     }
   });
 
-  getWish(0);
+  getPosts(0);
 
-  function getWish(page) {
+  function getPosts(page) {
     const callFunction = "timeline";
-    const callArgs = "[10, 0]";
+    const callArgs = "[10, " + page * 10 + "]";
     nebPay.simulateCall(dappAddress, 0, callFunction, callArgs, {
       listener: parseTweets
     });
@@ -100,9 +107,10 @@
   }
 
   function parseTweets(response) {
+    const currentTweets = app.$data.list;
     if (!response.result) return;
     const result = eval(JSON.parse(response.result));
-    Vue.set(app, 'list', result.reverse())
+    Vue.set(app, 'list', result.reverse().concat(currentTweets))
   }
 </script>
 </body>

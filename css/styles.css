@@ -155,3 +155,14 @@ body {
     height: 32px;
     border-radius: 4px;
 }
+
+#load-more {
+    clear: both;
+    background-color: white;
+    border-radius: 6px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid #e8e8e8;
+}
