@@ -7,18 +7,35 @@
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 </head>
 <body>
+<div class="title">Leave your message on blockchain, it will never be deleted nor modified.</div>
 
-<div id="app">
-    <h2>Tweets</h2>
-    <div id="stream" v-for="tweet in list">
-        <div class="tweet">
+<div id="page-container">
+    <div id="dashboard">
+        <div id="profile-summary">
             <div class="content">
-                <img class="avatar" src="image/nebulas.png"/>
-                <strong class="fullname">{{tweet.from}}</strong>
-                <p class="tweet-text">{{tweet.content}}</p>
+                <img class='avatar' src='image/nebulas.png'/>
             </div>
-            <div class="time">
-                <span v-html="timeConverter(tweet.timeStamp)"/>
+        </div>
+        <div id="tweet-content">
+            <textarea class="tweet-compose" placeholder="Write down your message..."></textarea>
+            <div id="tweet-controls">
+                <div id="char-count">140</div>
+                <button class="button" id="tweet-submit">Submit</button>
+            </div>
+        </div>
+    </div>
+    <div id="app">
+        <h2>Messages</h2>
+        <div id="stream" v-for="tweet in list">
+            <div class="tweet">
+                <div class="content">
+                    <img class="avatar" src="image/nebulas.png"/>
+                    <strong class="fullname">{{tweet.from}}</strong>
+                    <p class="tweet-text">{{tweet.content}}</p>
+                </div>
+                <div class="time">
+                    <span v-html="timeConverter(tweet.timeStamp)"/>
+                </div>
             </div>
         </div>
     </div>
