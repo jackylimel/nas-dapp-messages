@@ -17,10 +17,11 @@
             </div>
         </div>
         <div id="tweet-content">
-            <textarea class="tweet-compose" placeholder="Write down your message..."></textarea>
             <div id="tweet-controls">
-                <div id="char-count">140</div>
-                <button class="button" id="tweet-submit">Submit</button>
+                <textarea class="tweet-compose" placeholder="Write down your message..." v-model="message"
+                          v-on:keyup="type"></textarea>
+                <div id="char-count">{{ 140 - message.length}}</div>
+                <button class="button" id="tweet-submit" v-if="allowSubmit">Submit</button>
             </div>
         </div>
     </div>
@@ -46,8 +47,10 @@
   const nebPay = new NebPay();
   const dappAddress = "n1kFDbz5TvZ3nb4SLpuAkFfDtGKFfb9GB4f";
   const app = new Vue({
-    el: '#app',
+    el: '#page-container',
     data: {
+      message: '',
+      allowSubmit: true,
       list: []
     },
     methods: {
@@ -61,6 +64,10 @@
         const min = a.getMinutes();
         const sec = a.getSeconds();
         return date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
+      },
+      type: function () {
+        const messageLength = this.message.length;
+        this.allowSubmit = messageLength <= 140;
       }
     }
   });
