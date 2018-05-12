@@ -1,61 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title> Ideal React Seed </title>
+    <title>Micro blog on BlockChain</title>
+    <link rel="stylesheet" href="css/styles.css" type="text/css"/>
     <script src="./lib/nebPay.js" type="text/javascript" charset="utf-8"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 </head>
 <body>
 
 <div id="app">
-    <div class="item" v-for="tweet in list">
-        <div class="user">
-            <div class="from">
-                {{ tweet.from }}
-            </div>
-            <div class="timeStamp">
-                {{ tweet.timeStamp }}
-            </div>
+    <h2>Tweets</h2>
+    <div id="stream" v-for="tweet in list">
+        <div class="tweet">
             <div class="content">
-                {{ tweet.content }}
+                <img class="avatar" src="image/nebulas.png"/>
+                <strong class="fullname">{{tweet.from}}</strong>
+                <p class="tweet-text">{{tweet.content}}</p>
+            </div>
+            <div class="time">
+                <span v-html="timeConverter(tweet.timeStamp)"/>
             </div>
         </div>
     </div>
 </div>
 
-<input type="button" value="Submit" name="submit"/>
-
 <script>
-  var NebPay = require("nebpay");
+  const NebPay = require("nebpay");
   const nebPay = new NebPay();
-  var dappAddress = "n1kFDbz5TvZ3nb4SLpuAkFfDtGKFfb9GB4f";
+  const dappAddress = "n1kFDbz5TvZ3nb4SLpuAkFfDtGKFfb9GB4f";
+  const app = new Vue({
+    el: '#app',
+    data: {
+      list: []
+    },
+    methods: {
+      timeConverter: function (timeStamp) {
+        const a = new Date(timeStamp * 1000);
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const year = a.getFullYear();
+        const month = months[a.getMonth()];
+        const date = a.getDate();
+        const hour = a.getHours();
+        const min = a.getMinutes();
+        const sec = a.getSeconds();
+        return date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
+      }
+    }
+  });
 
   getWish(0);
 
   function getWish(page) {
-
-    var to = dappAddress;
-    var value = "0";
-    var callFunction = "timeline";
-    var callArgs = "[10, 0]";
-    nebPay.simulateCall(to, value, callFunction, callArgs, {
-      listener: cbSearch //指定回调函数
+    const callFunction = "timeline";
+    const callArgs = "[10, 0]";
+    nebPay.simulateCall(dappAddress, 0, callFunction, callArgs, {
+      listener: parse
     });
   }
 
-  function cbSearch(response) {
+  function parse(response) {
     if (!response.result) return;
-    var result = eval(JSON.parse(response.result));
-    console.log(result);
-    Vue.set(app, 'list', result)
+    const result = eval(JSON.parse(response.result));
+    Vue.set(app, 'list', result.reverse())
   }
-
-  var app = new Vue({
-    el: '#app',
-    data: {
-      list: []
-    }
-  })
 </script>
 </body>
 </html>
