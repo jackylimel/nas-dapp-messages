@@ -32,11 +32,6 @@
         </div>
         <div id="messages">
             <h2>Messages</h2>
-
-            <div id="load-more" style="cursor: pointer;" v-if="list.length != 0 && list.length % 10 == 0"
-                 v-on:click="loadMore">
-                Click to load more
-            </div>
             <div id="stream" v-for="tweet in list">
                 <div class="tweet">
                     <div class="content">
@@ -64,7 +59,8 @@
       message: '',
       allowSubmit: true,
       list: [],
-      messagePosted: false
+      messagePosted: false,
+      loadedPages: 0
     },
     methods: {
       timeConverter: function (timeStamp) {
@@ -88,12 +84,13 @@
         nebPay.call(dappAddress, 0, "post", JSON.stringify([this.message]), {
           listener: messagePosted
         });
-      },
-      loadMore: function () {
-        getPosts(this.list.length / 10)
       }
     }
   });
+
+  setInterval(function () {
+    getPosts(app.$data.loadedPages);
+  }, 20000);
 
   getPosts(0);
 
@@ -108,18 +105,21 @@
   function messagePosted() {
     Vue.set(app, 'messagePosted', true);
     Vue.set(app, 'message', '');
-
-    setTimeout(function() {
-      Vue.set(app, 'messagePosted', false);
-      getPosts(0);
-    }, 20000);
   }
 
   function parseTweets(response) {
+    Vue.set(app, 'messagePosted', false);
+
     const currentTweets = app.$data.list;
+    Vue.set(app, 'loadedPages', currentTweets.length / 10);
+
     if (!response.result) return;
     const result = eval(JSON.parse(response.result));
-    Vue.set(app, 'list', result.reverse().concat(currentTweets))
+    Vue.set(app, 'list', result.reverse().concat(currentTweets));
+
+    if (result.length !== 0 && result.length % 10 === 0) {
+      getPosts(app.$data.loadedPages + 1);
+    }
   }
 </script>
 </body>
