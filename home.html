@@ -107,6 +107,8 @@
 
   function messagePosted() {
     Vue.set(app, 'messagePosted', true);
+    Vue.set(app, 'message', '');
+
     setTimeout(function() {
       Vue.set(app, 'messagePosted', false);
       getPosts(0);
