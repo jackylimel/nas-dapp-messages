@@ -29,7 +29,8 @@
         <div id="messages">
             <h2>Messages</h2>
 
-            <div id="load-more" style="cursor: pointer;" v-if="list.length != 0 && list.length % 10 == 0" v-on:click="loadMore">
+            <div id="load-more" style="cursor: pointer;" v-if="list.length != 0 && list.length % 10 == 0"
+                 v-on:click="loadMore">
                 Click to load more
             </div>
             <div id="stream" v-for="tweet in list">
@@ -74,8 +75,10 @@
         const date = a.getDate();
         const hour = a.getHours();
         const min = a.getMinutes();
+        const minute = min.toString().length === 1 ? '0' + min : min;
         const sec = a.getSeconds();
-        return date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
+        const seconds = sec.toString().length === 1 ? '0' + sec : sec;
+        return date + ' ' + month + ' ' + year + ' ' + hour + ':' + minute + ':' + seconds;
       },
       type: function () {
         const messageLength = this.message.length;
