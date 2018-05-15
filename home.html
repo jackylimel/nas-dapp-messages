@@ -10,6 +10,10 @@
 <div id="app">
     <div class="title">Leave your message on blockchain, it will never be deleted nor modified.</div>
 
+    <div class="header" v-if="messagePosted">Message posted, please come back later. Your message will appear on
+        blockchain soon.
+    </div>
+
     <div id="page-container">
         <div id="dashboard">
             <div id="profile-summary">
@@ -46,10 +50,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="footer" v-if="messagePosted">Message posted, please come back later. Your message will appear on
-        blockchain soon.
     </div>
 </div>
 
@@ -106,7 +106,11 @@
   }
 
   function messagePosted() {
-    Vue.set(app, 'messagePosted', true)
+    Vue.set(app, 'messagePosted', true);
+    setTimeout(function() {
+      Vue.set(app, 'messagePosted', false);
+      getPosts(0);
+    }, 20000);
   }
 
   function parseTweets(response) {

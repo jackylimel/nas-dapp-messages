@@ -21,7 +21,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
     align-items: center;
 }
 
-.footer {
+.header {
     background-color: white;
     width: 837px;
     margin: 20px auto;
