@@ -10,8 +10,7 @@
 <div id="app">
     <div class="title">Leave your message on blockchain, it will never be deleted nor modified.</div>
 
-    <div class="header" v-if="messagePosted">Message posted, please come back later. Your message will appear on
-        blockchain soon.
+    <div class="header" v-if="messagePosted">Message posted. Your message will appear on blockchain soon.
     </div>
 
     <div id="page-container">
@@ -52,7 +51,7 @@
 <script>
   const NebPay = require("nebpay");
   const nebPay = new NebPay();
-  const dappAddress = "n1wY3fzqZ5FbMPnjFWERdwS3KNPXJ59cCd2";
+  const dappAddress = "n1iDJb3KdqmZDyV7kX9cnEPqXeGeAVRwwiL";
   const app = new Vue({
     el: '#app',
     data: {
@@ -111,11 +110,15 @@
     Vue.set(app, 'messagePosted', false);
 
     const currentTweets = app.$data.list;
-    Vue.set(app, 'loadedPages', currentTweets.length / 10);
+    Vue.set(app, 'loadedPages', Math.round(currentTweets.length / 10));
 
     if (!response.result) return;
     const result = eval(JSON.parse(response.result));
-    Vue.set(app, 'list', result.reverse().concat(currentTweets));
+    const filteredResult = result.filter(tweet => {
+      const matchedTweets = currentTweets.filter(current => current.from === tweet.from && current.timeStamp === tweet.timeStamp)
+      return matchedTweets.length === 0;
+    });
+    Vue.set(app, 'list', filteredResult.reverse().concat(currentTweets));
 
     if (result.length !== 0 && result.length % 10 === 0) {
       getPosts(app.$data.loadedPages + 1);
